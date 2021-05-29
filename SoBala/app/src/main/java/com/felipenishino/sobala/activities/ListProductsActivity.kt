@@ -1,15 +1,12 @@
 package com.felipenishino.sobala.activities
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import com.felipenishino.sobala.R
-import com.felipenishino.sobala.databinding.ActivityMainBinding
+import com.felipenishino.sobala.databinding.ActivityListProductsBinding
+import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.ProdutoService
-import com.felipenishino.sobala.model.Produto
-import com.google.android.material.snackbar.Snackbar
+import com.felipenishino.sobala.model.Product
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,18 +15,35 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+class ListProductsActivity : AppCompatActivity() {
+    lateinit var binding: ActivityListProductsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityListProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         listAllProducts()
     }
 
+    fun updateUI(products: List<Product>) {
+        products.forEach { product ->
+            val productBinding
+                    =
+                ProductCardBinding.inflate(layoutInflater)
+
+            productBinding.txtProductName.text = product.nome
+            productBinding.txtProductPrice.text = "R\$${product.preco}"
+
+            binding.productContainer.addView(productBinding.root)
+        }
+    }
+
+    fun refreshProducts() {
+
+
+        listAllProducts()
+    }
 
     fun listAllProducts(){
         val http = OkHttpClient
@@ -40,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val retrofit = Retrofit
             .Builder()
-            .baseUrl("http://murmuring-wave-61983.herokuapp.com")
+            .baseUrl("https://murmuring-wave-61983.herokuapp.com")
             .addConverterFactory(GsonConverterFactory.create())
             .client(http)
             .build()
@@ -49,9 +63,9 @@ class MainActivity : AppCompatActivity() {
 
         val call = productService.listAll()
 
-        val callback = object : Callback<List<Produto>> {
+        val callback = object : Callback<List<Product>> {
 
-            override fun onResponse(call: Call<List<Produto>>, response: Response<List<Produto>>) {
+            override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
 //                binding.progressBar.visibility = View.INVISIBLE
 //                binding.shimer.visibility = View.INVISIBLE
 //                binding.shimer.stopShimmer()
@@ -60,7 +74,12 @@ class MainActivity : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val listaProduto = response.body()
-                    Log.d("API", listaProduto.toString())
+                    if (listaProduto.isNullOrEmpty()) {
+                        Log.d("asdasdsa", "Chamada bem-sucedida, porém retornou vazio")
+                    }
+                    else {
+                        updateUI(listaProduto!!)
+                    }
                 }
                 else {
 //                    Snackbar.make(
@@ -69,11 +88,11 @@ class MainActivity : AppCompatActivity() {
 //                        Snackbar.LENGTH_LONG
 //                    ).show()
 //
-//                    Log.e("ERRO-Retrofit", response.errorBody().toString())
+                    Log.e("asdasdsa", response.errorBody().toString())
                 }
             }
 
-            override fun onFailure(call: Call<List<Produto>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Product>>, t: Throwable) {
 //                binding.progressBar.visibility = View.INVISIBLE
 //                binding.shimer.visibility = View.INVISIBLE
 //                binding.shimer.stopShimmer()
@@ -86,12 +105,16 @@ class MainActivity : AppCompatActivity() {
 //                    Snackbar.LENGTH_LONG
 //                ).show()
 
-                Log.e("ERRO-Retrofit", "Falha Conexão",t)
+                Log.e("asdasdsa", "Falha Conexão",t)
             }
 
         }
 
         call.enqueue(callback)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        refreshProducts()
     }
 }
