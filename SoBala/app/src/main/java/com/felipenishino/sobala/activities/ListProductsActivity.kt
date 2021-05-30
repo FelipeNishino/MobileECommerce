@@ -1,5 +1,6 @@
 package com.felipenishino.sobala.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,8 +24,14 @@ class ListProductsActivity : AppCompatActivity() {
         binding = ActivityListProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         listAllProducts()
+
+
     }
+
+
+
 
     fun updateUI(products: List<Product>) {
         products.forEach { product ->
@@ -34,6 +41,14 @@ class ListProductsActivity : AppCompatActivity() {
 
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
+
+            productBinding.cardViewProduct.setOnClickListener {
+                val intent = Intent(this,  DetalheProdutoActivity::class.java)
+                intent.putExtra("product", product)
+                //startActivityForResult(intent, 0)
+                startActivity(intent)
+            }
+
 
             binding.productContainer.addView(productBinding.root)
         }

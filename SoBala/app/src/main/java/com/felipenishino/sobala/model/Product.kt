@@ -1,5 +1,7 @@
 package com.felipenishino.sobala.model
 
+import java.io.Serializable
+
 data class Product (
     var id: Int,
     var nome: String,
@@ -7,4 +9,4 @@ data class Product (
     var categoria: String,
     var desconto: Int,
     var descricao: String
-)
+) : Serializable
