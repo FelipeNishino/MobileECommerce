@@ -4,6 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityListProductsBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.ProdutoService
@@ -30,7 +33,20 @@ class ListProductsActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+      when(item.itemId) {
+            R.id.cart -> {
+                val i = Intent(this, CartActivity::class.java)
+                startActivity(i)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 
     fun updateUI(products: List<Product>) {
@@ -55,8 +71,6 @@ class ListProductsActivity : AppCompatActivity() {
     }
 
     fun refreshProducts() {
-
-
         listAllProducts()
     }
 
