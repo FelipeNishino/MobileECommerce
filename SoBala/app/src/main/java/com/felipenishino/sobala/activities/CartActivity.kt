@@ -3,10 +3,21 @@ package com.felipenishino.sobala.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
+import com.felipenishino.sobala.databinding.ProductCardBinding
+import com.felipenishino.sobala.db.ProdutoService
+import com.felipenishino.sobala.model.Product
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class CartActivity : AppCompatActivity() {
     lateinit var binding: ActivityCartBinding
@@ -16,6 +27,29 @@ class CartActivity : AppCompatActivity() {
         binding = ActivityCartBinding.inflate(layoutInflater)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(binding.root)
+    }
+
+    fun updateUI(products: List<Product>) {
+        binding.cartContainer.removeAllViews()
+        products.forEach { product ->
+            val productBinding
+                    =
+                    ProductCardBinding.inflate(layoutInflater)
+
+            productBinding.txtProductName.text = product.nome
+            productBinding.txtProductPrice.text = "R\$${product.preco}"
+
+            binding.cartContainer.addView(productBinding.root)
+        }
+    }
+
+    fun refreshProducts() {
+        // TODO: coloca as fita do Room aqui e passa a lista de produtos como parâmetro do updateUI
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshProducts()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
