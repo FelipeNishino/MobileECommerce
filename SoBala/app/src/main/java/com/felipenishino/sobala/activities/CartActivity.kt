@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.room.Room
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
+import com.felipenishino.sobala.db.AppDatabase
 import com.felipenishino.sobala.db.ProdutoService
 import com.felipenishino.sobala.model.Product
 import okhttp3.OkHttpClient
@@ -39,12 +41,26 @@ class CartActivity : AppCompatActivity() {
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
 
+            productBinding.cardViewProduct.setOnClickListener {
+                val intent = Intent(this,  DetalheProdutoActivity::class.java)
+                intent.putExtra("product", product)
+                //startActivityForResult(intent, 0)
+                startActivity(intent)
+            }
             binding.cartContainer.addView(productBinding.root)
         }
     }
 
     fun refreshProducts() {
-        // TODO: coloca as fita do Room aqui e passa a lista de produtos como parâmetro do updateUI
+        val db = Room.databaseBuilder(this, AppDatabase::class.java, "db").build()
+        Thread {
+            val prd = db.cartDAO().getAllCart()
+
+            runOnUiThread {
+                updateUI(prd)
+            }
+
+        }.start()
     }
 
     override fun onResume() {
