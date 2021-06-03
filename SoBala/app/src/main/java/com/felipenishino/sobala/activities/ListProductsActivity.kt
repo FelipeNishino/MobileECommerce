@@ -40,29 +40,25 @@ class ListProductsActivity : AppCompatActivity() {
         }
 
         binding.navigationView.setNavigationItemSelectedListener {
-            Log.d("navitemselected", "about")
             binding.drawerLayout.closeDrawers()
             when(it.itemId) {
                 R.id.about -> {
-                    Log.d("navitemselected", "about")
                     val i = Intent(this, AboutActivity::class.java)
                     startActivity(i)
                     true
                 }
                 R.id.account -> {
-                    Log.d("navitemselected", "account")
                     val i = Intent(this, AccountActivity::class.java)
                     startActivity(i)
                     true
                 }
                 R.id.purchaseHistory -> {
-                    Log.d("navitemselected", "purchase history")
                     val i = Intent(this, PurchaseHistoryActivity::class.java)
                     startActivity(i)
                     true
                 }
                 else -> {
-                    Log.d("navitemselected", "none")
+                    Log.d("navitemselected", "Error, no valid id found.")
                     false
                 }
             }
@@ -77,13 +73,15 @@ class ListProductsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.cart) {
-            val i = Intent(this, CartActivity::class.java)
-            startActivity(i)
-        }
-        else {
-            toggle?.let {
-                return it.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.cart -> {
+                val i = Intent(this, CartActivity::class.java)
+                startActivity(i)
+            }
+            else -> {
+                toggle?.let {
+                    return it.onOptionsItemSelected(item)
+                }
             }
         }
         return super.onOptionsItemSelected(item)
