@@ -27,6 +27,7 @@ class ListProductsActivity : AppCompatActivity() {
     }
 
     fun updateUI(products: List<Product>) {
+        binding.productContainer.removeAllViews()
         products.forEach { product ->
             val productBinding
                     =
@@ -40,8 +41,6 @@ class ListProductsActivity : AppCompatActivity() {
     }
 
     fun refreshProducts() {
-
-
         listAllProducts()
     }
 
