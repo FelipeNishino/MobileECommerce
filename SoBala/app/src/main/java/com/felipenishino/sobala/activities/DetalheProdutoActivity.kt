@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityDetalheProdutoBinding
 import com.felipenishino.sobala.model.Product
+import com.squareup.picasso.Picasso
 
 class DetalheProdutoActivity : AppCompatActivity() {
     lateinit var binding: ActivityDetalheProdutoBinding
@@ -21,6 +22,7 @@ class DetalheProdutoActivity : AppCompatActivity() {
 
         binding.txtNome.text = product.nome
         binding.txtPreco.text = "R\$${product.preco}"
+        Picasso.get().load(product.linkImg).into(binding.imageView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
