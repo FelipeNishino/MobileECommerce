@@ -81,11 +81,12 @@ class ListProductsActivity : AppCompatActivity() {
         }
 
         listAllProducts()
+
+        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+        updateMenu(navigationView.menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        updateMenu(menu)
-
         menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
