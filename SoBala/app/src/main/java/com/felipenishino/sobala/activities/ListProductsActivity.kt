@@ -11,6 +11,7 @@ import com.felipenishino.sobala.databinding.ActivityListProductsBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.ProdutoService
 import com.felipenishino.sobala.model.Product
+import com.squareup.picasso.Picasso
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,6 +58,10 @@ class ListProductsActivity : AppCompatActivity() {
 
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
+
+
+            Picasso.get().load(product.linkImg).into(productBinding.imgProduct)
+
 
             productBinding.cardViewProduct.setOnClickListener {
                 val intent = Intent(this,  DetalheProdutoActivity::class.java)
