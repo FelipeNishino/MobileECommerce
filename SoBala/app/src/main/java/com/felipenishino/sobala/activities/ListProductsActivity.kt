@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityListProductsBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
@@ -22,12 +23,50 @@ import java.util.concurrent.TimeUnit
 
 class ListProductsActivity : AppCompatActivity() {
     lateinit var binding: ActivityListProductsBinding
+    var toggle: ActionBarDrawerToggle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.openDrawer, R.string.closeDrawer)
+
+        toggle?.let {
+            binding.drawerLayout.addDrawerListener(it)
+            it.syncState()
+        }
+
+        binding.navigationView.setNavigationItemSelectedListener {
+            Log.d("navitemselected", "about")
+            binding.drawerLayout.closeDrawers()
+            when(it.itemId) {
+                R.id.about -> {
+                    Log.d("navitemselected", "about")
+                    val i = Intent(this, AboutActivity::class.java)
+                    startActivity(i)
+                    true
+                }
+                R.id.account -> {
+                    Log.d("navitemselected", "account")
+                    val i = Intent(this, AccountActivity::class.java)
+                    startActivity(i)
+                    true
+                }
+                R.id.purchaseHistory -> {
+                    Log.d("navitemselected", "purchase history")
+                    val i = Intent(this, PurchaseHistoryActivity::class.java)
+                    startActivity(i)
+                    true
+                }
+                else -> {
+                    Log.d("navitemselected", "none")
+                    false
+                }
+            }
+        }
 
         listAllProducts()
     }
@@ -38,10 +77,13 @@ class ListProductsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-      when(item.itemId) {
-            R.id.cart -> {
-                val i = Intent(this, CartActivity::class.java)
-                startActivity(i)
+        if (item.itemId == R.id.cart) {
+            val i = Intent(this, CartActivity::class.java)
+            startActivity(i)
+        }
+        else {
+            toggle?.let {
+                return it.onOptionsItemSelected(item)
             }
         }
         return super.onOptionsItemSelected(item)

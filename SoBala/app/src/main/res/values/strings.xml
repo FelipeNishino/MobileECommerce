@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SoBala</string>
+    <string name="openDrawer">Abrir Menu</string>
+    <string name="closeDrawer">Fechar Menu</string>
 </resources>

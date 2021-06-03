@@ -22,6 +22,7 @@ class DetalheProdutoActivity : AppCompatActivity() {
 
         binding.txtNome.text = product.nome
         binding.txtPreco.text = "R\$${product.preco}"
+        binding.txtMarca.text = product.marca
         Picasso.get().load(product.linkImg).into(binding.imageView)
     }
 
