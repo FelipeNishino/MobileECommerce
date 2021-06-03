@@ -1,12 +1,8 @@
 package com.felipenishino.sobala.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityListProductsBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.ProdutoService
@@ -27,25 +23,8 @@ class ListProductsActivity : AppCompatActivity() {
         binding = ActivityListProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         listAllProducts()
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-      when(item.itemId) {
-            R.id.cart -> {
-                val i = Intent(this, CartActivity::class.java)
-                startActivity(i)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
 
     fun updateUI(products: List<Product>) {
         products.forEach { product ->
@@ -56,19 +35,13 @@ class ListProductsActivity : AppCompatActivity() {
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
 
-            productBinding.cardViewProduct.setOnClickListener {
-                val intent = Intent(this,  DetalheProdutoActivity::class.java)
-                intent.putExtra("product", product)
-                //startActivityForResult(intent, 0)
-                startActivity(intent)
-            }
-
-
             binding.productContainer.addView(productBinding.root)
         }
     }
 
     fun refreshProducts() {
+
+
         listAllProducts()
     }
 
