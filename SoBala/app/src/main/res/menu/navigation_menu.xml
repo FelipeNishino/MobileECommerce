@@ -17,5 +17,8 @@
             android:id="@+id/login"
             android:icon="@drawable/common_google_signin_btn_icon_dark_normal"
             android:title="Login"/>
+        <item
+            android:id="@+id/logout"
+            android:title="Logout"/>
     </group>
 </menu>

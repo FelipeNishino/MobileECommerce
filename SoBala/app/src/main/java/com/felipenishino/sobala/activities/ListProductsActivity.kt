@@ -16,6 +16,7 @@ import com.felipenishino.sobala.model.Product
 import com.felipenishino.sobala.utils.getCurrentUser
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -73,6 +74,10 @@ class ListProductsActivity : AppCompatActivity() {
                     startActivityForResult(intent, 1)
                     true
                 }
+                R.id.logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    true
+                }
                 else -> {
                     Log.d("navitemselected", "Error, no valid id found.")
                     false
@@ -81,9 +86,7 @@ class ListProductsActivity : AppCompatActivity() {
         }
 
         listAllProducts()
-
-        val navigationView = findViewById<NavigationView>(R.id.navigationView)
-        updateMenu(navigationView.menu)
+        updateMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -210,11 +213,14 @@ class ListProductsActivity : AppCompatActivity() {
         refreshProducts()
     }
 
-    private fun updateMenu(menu: Menu?) {
+    private fun updateMenu() {
+        val navigationView = findViewById<NavigationView>(R.id.navigationView)
+
         val isAuthenticated = getCurrentUser() != null
-        menu?.findItem(R.id.account)?.isVisible = isAuthenticated
-        menu?.findItem(R.id.purchaseHistory)?.isVisible = isAuthenticated
-        menu?.findItem(R.id.login)?.isVisible = !isAuthenticated
+        navigationView.menu.findItem(R.id.account)?.isVisible = isAuthenticated
+        navigationView.menu.findItem(R.id.purchaseHistory)?.isVisible = isAuthenticated
+        navigationView.menu.findItem(R.id.logout)?.isVisible = isAuthenticated
+        navigationView.menu.findItem(R.id.login)?.isVisible = !isAuthenticated
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -223,7 +229,7 @@ class ListProductsActivity : AppCompatActivity() {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 val navigationView = findViewById<NavigationView>(R.id.navigationView)
-                updateMenu(navigationView.menu)
+                updateMenu()
             }
         }
     }
