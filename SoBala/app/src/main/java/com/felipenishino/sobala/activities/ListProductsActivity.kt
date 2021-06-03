@@ -30,8 +30,6 @@ class ListProductsActivity : AppCompatActivity() {
 
 
         listAllProducts()
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

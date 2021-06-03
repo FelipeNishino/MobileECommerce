@@ -36,6 +36,10 @@ class DetalheProdutoActivity : AppCompatActivity() {
                 val i = Intent(this, CartActivity::class.java)
                 startActivity(i)
             }
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
