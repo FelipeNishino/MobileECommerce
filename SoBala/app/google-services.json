@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "734971965710",
-    "project_id": "sobala-d445c",
-    "storage_bucket": "sobala-d445c.appspot.com"
+    "project_number": "690367127051",
+    "project_id": "so-bala",
+    "storage_bucket": "so-bala.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:734971965710:android:1475b20800c9d6ad3aa75f",
+        "mobilesdk_app_id": "1:690367127051:android:1889ca15d99ae57e4c710e",
         "android_client_info": {
           "package_name": "com.felipenishino.sobala"
         }
       },
       "oauth_client": [
         {
-          "client_id": "734971965710-upspu6thvtt0h6e5qoo1tc4nd72676el.apps.googleusercontent.com",
+          "client_id": "690367127051-nk1fqb611uttvqr60nkfd2patd1vs6ek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.felipenishino.sobala",
+            "certificate_hash": "faaed78997bdff0c6b8fd26055c24187a43f61a1"
+          }
+        },
+        {
+          "client_id": "690367127051-v0j0dh68r6rh81nc4k8iudvutlfn4ekt.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAvhcuqhJYgZQsTbpfSnrZk3igjaf3kBVM"
+          "current_key": "AIzaSyBO6UylXFCQVmqfnQ7wf-RsScJjQdycXXo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "734971965710-upspu6thvtt0h6e5qoo1tc4nd72676el.apps.googleusercontent.com",
+              "client_id": "690367127051-v0j0dh68r6rh81nc4k8iudvutlfn4ekt.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

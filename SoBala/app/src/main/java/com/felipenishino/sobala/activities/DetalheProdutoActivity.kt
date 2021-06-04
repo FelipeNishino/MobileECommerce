@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityDetalheProdutoBinding
 import com.felipenishino.sobala.model.Product
+import com.felipenishino.sobala.utils.getCurrentUser
 import com.squareup.picasso.Picasso
 
 class DetalheProdutoActivity : AppCompatActivity() {
