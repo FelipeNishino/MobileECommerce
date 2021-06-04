@@ -3,27 +3,22 @@ package com.felipenishino.sobala.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import androidx.room.Room
-import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
 import com.felipenishino.sobala.databinding.CartProductCardBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.AppDatabase
-import com.felipenishino.sobala.db.ProdutoService
 import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
 import com.squareup.picasso.Picasso
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
-import java.util.concurrent.TimeUnit
+import com.felipenishino.sobala.model.Purchase
+import com.felipenishino.sobala.model.PurchaseItem
+import com.felipenishino.sobala.utils.getCurrentUser
+import com.felipenishino.sobala.utils.onPurchase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 enum class Operation {
     SUM, SUBTRACTION, ATRIBUTION, NONE
@@ -31,12 +26,15 @@ enum class Operation {
 
 class CartActivity : AppCompatActivity() {
     lateinit var binding: ActivityCartBinding
+    var database: DatabaseReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCartBinding.inflate(layoutInflater)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(binding.root)
+
+        configDatabase()
     }
 
     fun updateUI(products: Set<Product>, idToQuantity: Map<Int, Int>) {
@@ -111,6 +109,14 @@ class CartActivity : AppCompatActivity() {
         Thread { refreshProducts(op = Operation.NONE) }.start()
     }
 
+    fun configDatabase() {
+        val user = getCurrentUser()
+
+        if (user != null) {
+            database = Firebase.database.reference.child("users").child(user.uid)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             android.R.id.home -> {
@@ -119,5 +125,25 @@ class CartActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onClickPurchase(cart: Cart) {
+        val items = cart.products.map {
+            PurchaseItem(
+                produto = it,
+                quantidade = cart.productIdToQuantity.get(it.id)?: 1
+            )
+        }
+
+        var totalValue = 0.0
+
+        items.forEach { totalValue += it.quantidade * it.produto.preco }
+
+        val purchase = Purchase(
+            items = items,
+            valorTotal = totalValue
+        )
+
+        onPurchase(database, purchase)
     }
 }
