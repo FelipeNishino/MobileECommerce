@@ -12,13 +12,16 @@ import com.felipenishino.sobala.databinding.ActivityCartBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.AppDatabase
 import com.felipenishino.sobala.db.ProdutoService
+import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
+import com.squareup.picasso.Picasso
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CartActivity : AppCompatActivity() {
@@ -31,7 +34,7 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    fun updateUI(products: List<Product>) {
+    fun updateUI(products: Set<Product>, idToQuantity: Map<Int, Int>) {
         binding.cartContainer.removeAllViews()
         products.forEach { product ->
             val productBinding
@@ -40,26 +43,28 @@ class CartActivity : AppCompatActivity() {
 
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
+            productBinding.txtCardQuantity.text = "Quantidade: ${idToQuantity[product.id]}"
+
+            Picasso.get().load(product.linkImg).into(productBinding.imgProduct)
 
             productBinding.cardViewProduct.setOnClickListener {
                 val intent = Intent(this,  DetalheProdutoActivity::class.java)
                 intent.putExtra("product", product)
-                //startActivityForResult(intent, 0)
                 startActivity(intent)
             }
             binding.cartContainer.addView(productBinding.root)
         }
     }
 
-    fun refreshProducts() {
+    private fun refreshProducts() {
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "db").build()
         Thread {
-            val prd = db.cartDAO().getAllCart()
-
-            runOnUiThread {
-                updateUI(prd)
+            var cart = db.cartDAO().getCart() ?: Cart(1, mutableSetOf(), mutableMapOf())
+            if (cart.products.isNotEmpty()) {
+                runOnUiThread {
+                    updateUI(cart.products, cart.productIdToQuantity)
+                }
             }
-
         }.start()
     }
 

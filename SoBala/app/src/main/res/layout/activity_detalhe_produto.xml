@@ -44,15 +44,36 @@
         app:layout_constraintTop_toBottomOf="@+id/txtNome" />
 
     <TextView
-        android:id="@+id/txtMarca"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPreco" />
+            android:id="@+id/txtMarca"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="32dp"
+            android:text="TextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtPreco"/>
+    <Button
+            android:text="Adicionar ao carrinho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/btnAddCart"
+            app:layout_constraintTop_toBottomOf="@+id/editProductQuantity"
+            android:layout_marginTop="32dp" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="32dp"/>
+    <TextView
+            android:text="Quantidade:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/txtQuantity"
+            app:layout_constraintTop_toBottomOf="@+id/txtMarca" app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="32dp" android:layout_marginTop="44dp"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editProductQuantity"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
+            app:layout_constraintTop_toBottomOf="@+id/txtQuantity" android:layout_marginTop="32dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
