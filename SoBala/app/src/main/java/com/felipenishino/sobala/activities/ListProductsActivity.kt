@@ -76,6 +76,7 @@ class ListProductsActivity : AppCompatActivity() {
                 }
                 R.id.logout -> {
                     FirebaseAuth.getInstance().signOut()
+                    updateMenu()
                     true
                 }
                 else -> {

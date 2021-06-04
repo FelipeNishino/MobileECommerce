@@ -2,4 +2,18 @@
     <string name="app_name">SoBala</string>
     <string name="openDrawer">Abrir Menu</string>
     <string name="closeDrawer">Fechar Menu</string>
+    <string name="appTitle">Sobre a Só Bala</string>
+    <string name="appDescription">
+        A loja Só Bala é um projeto de E-Commerce desenvolvido para o trabalho final da
+        disciplina de Programação para Dispositivos Móveis no 5º semestre do curso de
+        Bacharelado em Ciência de Corno.\n\n
+        Os desenvolvedores da Só Bala estão listados abaixo, caso deseje entrar em contato
+        com algum de nós fique a vontade para usar os links e enviar um e-mail diretamente
+        para algum de nós.
+    </string>
+    <string name="Nishino">Felipe Danieli Nishino:\nfelipenishino@gmail.com</string>
+    <string name="Yamauchi">Gustavo Yamauchi Souza Reis:\nyamauchi_gu@hotmail.com</string>
+    <string name="Barao">Marco Antônio Barão Neves:\nmarcobaraoneves@gmail.com</string>
+    <string name="adSenac">Visite abaixo o site do Senac:</string>
+    <string name="senacLogoDesc">Logo do Senac</string>
 </resources>

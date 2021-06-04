@@ -1,10 +1,15 @@
 package com.felipenishino.sobala.activities
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import com.felipenishino.sobala.databinding.ActivityAboutBinding
-import com.felipenishino.sobala.databinding.ActivityAccountBinding
+
 
 class AboutActivity : AppCompatActivity() {
     lateinit var binding: ActivityAboutBinding
@@ -14,6 +19,30 @@ class AboutActivity : AppCompatActivity() {
         binding = ActivityAboutBinding.inflate(layoutInflater)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setContentView(binding.root)
+
+        binding.txtNishino.setOnClickListener { sendEmail("felipenishino@gmail.com") }
+        binding.txtYamauchi.setOnClickListener { sendEmail("yamauchi_gu@hotmail.com") }
+        binding.txtBarao.setOnClickListener { sendEmail("marcobaraoneves@gmail.com") }
+
+        binding.imgbtnAdSenac.setOnClickListener {
+                val uri = Uri.parse("https://www.sp.senac.br")
+                CustomTabsIntent.Builder()
+                        .build()
+                        .launchUrl(this, uri)
+        }
+    }
+
+    fun sendEmail(address: String) {
+        val i = Intent(Intent.ACTION_SEND)
+        i.type = "message/rfc822"
+        i.putExtra(Intent.EXTRA_EMAIL, arrayOf("marcobaraoneves@gmail.com"))
+        i.putExtra(Intent.EXTRA_SUBJECT, "")
+        i.putExtra(Intent.EXTRA_TEXT, "")
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."))
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
