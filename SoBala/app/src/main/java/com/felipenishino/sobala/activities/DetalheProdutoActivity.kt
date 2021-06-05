@@ -12,6 +12,7 @@ import com.felipenishino.sobala.databinding.ActivityDetalheProdutoBinding
 import com.felipenishino.sobala.db.AppDatabase
 import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -42,12 +43,11 @@ class DetalheProdutoActivity : AppCompatActivity() {
                 db.cartDAO().insertCart(cart)
             }
             cart.products.add(product)
+            cart.productIdToQuantity[product.id] = quantity + (cart.productIdToQuantity[product.id] ?: 0)
 
-            if (cart.productIdToQuantity[product.id] != null) {
-                cart.productIdToQuantity[product.id] = quantity + cart.productIdToQuantity[product.id]!!
-            }
-            else {
-                cart.productIdToQuantity[product.id] = quantity
+            runOnUiThread {
+                Snackbar.make(binding.root, R.string.addToCart, Snackbar.LENGTH_LONG)
+                    .show()
             }
             db.cartDAO().updateCart(cart)
         }.start()
