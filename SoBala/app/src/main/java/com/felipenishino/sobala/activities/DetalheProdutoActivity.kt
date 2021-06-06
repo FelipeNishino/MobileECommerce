@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.room.Room
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityDetalheProdutoBinding
@@ -55,6 +56,11 @@ class DetalheProdutoActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+
+        menu?.let {
+            menu.findItem(R.id.barbtnSearch).isVisible = false
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
