@@ -47,33 +47,31 @@ class PurchaseHistoryActivity : AppCompatActivity() {
         val purchaseListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val itemList = arrayListOf<Purchase>()
-                val purchases = dataSnapshot.children.forEach {
+                dataSnapshot.children.forEach {
                     val map = it.getValue<HashMap<String, Any>>()
 
 
-                    val items = map?.get("items") as List<*>
-                    val purchaseItems = items.map { item: HashMap<String, *> -> {
-                        val produto = item["produto"] as HashMap<*, *>
-
+                    val items = map?.get("items") as List<HashMap<String, *>>
+                    val purchaseItems = items.map { item ->
                         PurchaseItem(
                             produto = Product(
-                                id = produto["id"] as Int,
-                                nome = produto["nome"] as String,
-                                marca = produto["id"] as String,
-                                descricao = produto["descricao"] as String,
-                                desconto = produto["desconto"] as Int,
-                                linkImg = produto["linkImg"] as String,
-                                preco = produto["preco"] as Double
+                                id = ((item["produto"] as HashMap<String, *>)["id"] as Long).toInt(),
+                                nome = (item["produto"] as HashMap<String, *>)["nome"] as String,
+                                marca = (item["produto"] as HashMap<String, *>)["marca"] as String,
+                                descricao = (item["produto"] as HashMap<String, *>)["descricao"] as String,
+                                desconto = ((item["produto"] as HashMap<String, *>)["desconto"] as Long).toInt(),
+                                linkImg = (item["produto"] as HashMap<String, *>)["linkImg"] as String,
+                                preco = ((item["produto"] as HashMap<String, *>)["preco"] as Long).toDouble()
                             ),
-                            quantidade = item["quantidade"] as Int
+                            quantidade = (item["quantidade"] as Long).toInt()
                         )
-                    } }
+                    }
 
-                    itemList.add(Purchase(id = it.key, valorTotal = map["valorTotal"] as Double, compradoEm = map["compradoEm"] as String?, items = itemList))
+                    itemList.add(Purchase(id = it.key, valorTotal = (map["valorTotal"] as Long).toDouble(), compradoEm = map["compradoEm"] as String?, items = purchaseItems))
                 }
 
-                if (purchases != null) {
-                    updateUI(purchases.values.toList())
+                if (itemList.isNotEmpty()) {
+                    updateUI(itemList)
                 }
             }
 
@@ -81,7 +79,7 @@ class PurchaseHistoryActivity : AppCompatActivity() {
                 Log.w("PurchaseHistoryActivity", "loadPurchases:onCancelled", databaseError.toException())
             }
         }
-        database?.addValueEventListener(purchaseListener)
+        database?.child("purchases")?.addValueEventListener(purchaseListener)
     }
 
     fun updateUI(purchases: List<Purchase>) {
