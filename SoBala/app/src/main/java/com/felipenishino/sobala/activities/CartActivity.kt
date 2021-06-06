@@ -119,6 +119,15 @@ class CartActivity : AppCompatActivity() {
         Thread { refreshProducts(op = Operation.NONE) }.start()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+
+        menu?.let {
+            menu.findItem(R.id.barbtnSearch).isVisible = false
+            menu.findItem(R.id.cart).isVisible = false
+        }
+
+        return super.onCreateOptionsMenu(menu)
     fun configDatabase() {
         val user = getCurrentUser()
 

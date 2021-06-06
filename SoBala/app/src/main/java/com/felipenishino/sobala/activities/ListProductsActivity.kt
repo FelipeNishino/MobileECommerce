@@ -1,11 +1,16 @@
 package com.felipenishino.sobala.activities
 
 import android.app.Activity
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.ProgressBar
+import android.widget.SearchView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.felipenishino.sobala.R
@@ -44,6 +49,8 @@ class ListProductsActivity : AppCompatActivity() {
             binding.drawerLayout.addDrawerListener(it)
             it.syncState()
         }
+
+        binding.progressIndicator.visibility = View.INVISIBLE
 
         binding.navigationView.setNavigationItemSelectedListener {
             binding.drawerLayout.closeDrawers()
@@ -86,12 +93,37 @@ class ListProductsActivity : AppCompatActivity() {
             }
         }
 
-        listAllProducts()
+        refreshProducts()
         updateMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+
+        val searchItem = menu?.let {
+             menu.findItem(R.id.barbtnSearch)
+        }
+
+        val searchView = searchItem!!.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                getProducts(query)
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("asd", "asdasd")
+
+                return true
+            }
+        })
+
+        searchView.setOnCloseListener {
+            getProducts(null)
+            false
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -107,12 +139,12 @@ class ListProductsActivity : AppCompatActivity() {
                 }
             }
         }
+
         return super.onOptionsItemSelected(item)
     }
 
-
     fun updateUI(products: List<Product>) {
-        binding.productContainer.removeAllViews()
+        binding.progressIndicator.visibility = View.INVISIBLE
         products.forEach { product ->
             val productBinding
                     =
@@ -130,16 +162,17 @@ class ListProductsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-
             binding.productContainer.addView(productBinding.root)
         }
     }
 
     fun refreshProducts() {
-        listAllProducts()
+        getProducts(null)
     }
 
-    fun listAllProducts(){
+    fun getProducts(query: String?){
+        binding.productContainer.removeAllViews()
+        binding.progressIndicator.visibility = View.VISIBLE
         val http = OkHttpClient
             .Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -167,13 +200,22 @@ class ListProductsActivity : AppCompatActivity() {
 //                binding.swipeRefresh.isRefreshing = false
 
                 if (response.isSuccessful) {
-                    val listaProduto = response.body()
-                    if (listaProduto.isNullOrEmpty()) {
-                        Log.d("homeRetrofit", "Chamada bem-sucedida, porém retornou vazio")
+                    var listaProduto = response.body()
+                    listaProduto?.let { list ->
+                        query?.let {
+                            updateUI(list.filter { product -> product.nome.contains(Regex(it, RegexOption.IGNORE_CASE)) || product.marca.contains(Regex(it, RegexOption.IGNORE_CASE)) })
+                            return
+                        }
+                        updateUI(list)
                     }
-                    else {
-                        updateUI(listaProduto!!)
-                    }
+
+//                    if (listaProduto.isNullOrEmpty()) {
+//                        Log.d("homeRetrofit", "Chamada bem-sucedida, porém retornou vazio")
+//                    }
+//                    else {
+//
+//
+//                    }
                 }
                 else {
 //                    Snackbar.make(

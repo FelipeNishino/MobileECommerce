@@ -2,6 +2,8 @@
     <string name="app_name">SoBala</string>
     <string name="openDrawer">Abrir Menu</string>
     <string name="closeDrawer">Fechar Menu</string>
+    <string name="searchTitle">Pesquisar titulo</string>
+    <string name="searchHint">Pesquisar produto...</string>
     <string name="appTitle">Sobre a Só Bala</string>
     <string name="appDescription">
         A loja Só Bala é um projeto de E-Commerce desenvolvido para o trabalho final da
