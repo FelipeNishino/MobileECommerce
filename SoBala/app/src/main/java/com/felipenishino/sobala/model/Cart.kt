@@ -9,7 +9,7 @@ import java.io.Serializable
 @Entity
 data class Cart (
         @PrimaryKey(autoGenerate = true)
-        var id: Int,
+        var id: Int? = null,
         var products: MutableSet<Product>,
         var productIdToQuantity: MutableMap<Int, Int>
 ) : Serializable

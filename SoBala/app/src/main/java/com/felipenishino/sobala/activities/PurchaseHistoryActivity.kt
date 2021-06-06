@@ -61,13 +61,13 @@ class PurchaseHistoryActivity : AppCompatActivity() {
                                 descricao = (item["produto"] as HashMap<String, *>)["descricao"] as String,
                                 desconto = ((item["produto"] as HashMap<String, *>)["desconto"] as Long).toInt(),
                                 linkImg = (item["produto"] as HashMap<String, *>)["linkImg"] as String,
-                                preco = ((item["produto"] as HashMap<String, *>)["preco"] as Long).toDouble()
+                                preco = (item["produto"] as HashMap<String, *>)["preco"] as Double
                             ),
                             quantidade = (item["quantidade"] as Long).toInt()
                         )
                     }
 
-                    itemList.add(Purchase(id = it.key, valorTotal = (map["valorTotal"] as Long).toDouble(), compradoEm = map["compradoEm"] as String?, items = purchaseItems))
+                    itemList.add(Purchase(id = it.key, valorTotal = map["valorTotal"] as Double, compradoEm = map["compradoEm"] as String?, items = purchaseItems))
                 }
 
                 if (itemList.isNotEmpty()) {

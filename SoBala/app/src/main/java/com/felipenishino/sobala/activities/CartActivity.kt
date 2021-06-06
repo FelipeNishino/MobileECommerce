@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.room.Room
+import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
 import com.felipenishino.sobala.databinding.CartProductCardBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
@@ -16,9 +17,11 @@ import com.felipenishino.sobala.model.Purchase
 import com.felipenishino.sobala.model.PurchaseItem
 import com.felipenishino.sobala.utils.getCurrentUser
 import com.felipenishino.sobala.utils.onPurchase
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.lang.Exception
 
 enum class Operation {
     SUM, SUBTRACTION, ATRIBUTION, NONE
@@ -26,7 +29,9 @@ enum class Operation {
 
 class CartActivity : AppCompatActivity() {
     lateinit var binding: ActivityCartBinding
+    lateinit var cart: Cart
     var database: DatabaseReference? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +40,11 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         configDatabase()
+
+        binding.btnFinish.setOnClickListener {
+            onClickPurchase(cart)
+            deleteCart()
+        }
     }
 
     fun updateUI(products: Set<Product>, idToQuantity: Map<Int, Int>) {
@@ -84,7 +94,7 @@ class CartActivity : AppCompatActivity() {
 
     private fun refreshProducts(productID: Int? = null, newValue: Int? = null , op: Operation) {
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "db").build()
-        var cart = db.cartDAO().getCart() ?: Cart(1, mutableSetOf(), mutableMapOf())
+        cart = db.cartDAO().getCart() ?: Cart(products = mutableSetOf(), productIdToQuantity = mutableMapOf())
         if (cart.products.isNotEmpty()) {
             if (op != Operation.NONE) {
                 productID?.let { id ->
@@ -144,6 +154,25 @@ class CartActivity : AppCompatActivity() {
             valorTotal = totalValue
         )
 
-        onPurchase(database, purchase)
+        try {
+            onPurchase(database, purchase)
+            Snackbar.make(binding.root, R.string.addToCart, Snackbar.LENGTH_LONG)
+                .show()
+        }
+        catch (E: Exception){
+            Snackbar.make(binding.root, "Erro", Snackbar.LENGTH_LONG)
+                .show()
+        }
+
+    }
+
+    fun deleteCart(){
+        Thread{
+            val db = Room.databaseBuilder(this, AppDatabase::class.java, "db").build()
+            db.cartDAO().deleteCart(cart)
+            runOnUiThread {
+                updateUI(emptySet(), emptyMap())
+            }
+        }.start()
     }
 }
