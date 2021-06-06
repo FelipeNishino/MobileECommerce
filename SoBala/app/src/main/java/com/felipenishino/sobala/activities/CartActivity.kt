@@ -9,17 +9,25 @@ import android.view.MenuItem
 import androidx.room.Room
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
+import com.felipenishino.sobala.databinding.CartProductCardBinding
 import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.AppDatabase
 import com.felipenishino.sobala.db.ProdutoService
+import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
+import com.squareup.picasso.Picasso
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
+
+enum class Operation {
+    SUM, SUBTRACTION, ATRIBUTION, NONE
+}
 
 class CartActivity : AppCompatActivity() {
     lateinit var binding: ActivityCartBinding
@@ -31,41 +39,76 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    fun updateUI(products: List<Product>) {
+    fun updateUI(products: Set<Product>, idToQuantity: Map<Int, Int>) {
         binding.cartContainer.removeAllViews()
         products.forEach { product ->
             val productBinding
                     =
-                    ProductCardBinding.inflate(layoutInflater)
+                    CartProductCardBinding.inflate(layoutInflater)
 
-            productBinding.txtProductName.text = product.nome
-            productBinding.txtProductPrice.text = "R\$${product.preco}"
+            productBinding.txtCartProductName.text = product.nome
+//            productBinding.txtProductPrice.text = "R\$${product.preco}"
+            productBinding.editCartProductQuantity.setText(idToQuantity[product.id].toString())
 
-            productBinding.cardViewProduct.setOnClickListener {
+            Picasso.get().load(product.linkImg).into(productBinding.imgCartProduct)
+
+            productBinding.cardViewCart.setOnClickListener {
                 val intent = Intent(this,  DetalheProdutoActivity::class.java)
                 intent.putExtra("product", product)
-                //startActivityForResult(intent, 0)
                 startActivity(intent)
             }
+
+            productBinding.editCartProductQuantity.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    var newValue = productBinding.editCartProductQuantity.text.toString().toInt()
+                    if (newValue < 1) {
+                        newValue = 1
+                    }
+                    Thread { refreshProducts(product.id, newValue, Operation.ATRIBUTION) }.start()
+                }
+            }
+
+            productBinding.btnDecrementQuantity.setOnClickListener {
+                if (idToQuantity[product.id]!! > 1) {
+                    productBinding.editCartProductQuantity.setText((idToQuantity[product.id]!! - 1).toString())
+                    Thread { refreshProducts(product.id, op = Operation.SUBTRACTION) }.start()
+                }
+            }
+
+            productBinding.btnIncrementQuantity.setOnClickListener {
+                productBinding.editCartProductQuantity.setText((idToQuantity[product.id]!! + 1).toString())
+                Thread { refreshProducts(product.id, op = Operation.SUM) }.start()
+            }
+
             binding.cartContainer.addView(productBinding.root)
         }
     }
 
-    fun refreshProducts() {
+    private fun refreshProducts(productID: Int? = null, newValue: Int? = null , op: Operation) {
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "db").build()
-        Thread {
-            val prd = db.cartDAO().getAllCart()
-
-            runOnUiThread {
-                updateUI(prd)
+        var cart = db.cartDAO().getCart() ?: Cart(1, mutableSetOf(), mutableMapOf())
+        if (cart.products.isNotEmpty()) {
+            if (op != Operation.NONE) {
+                productID?.let { id ->
+                    cart.productIdToQuantity[id]?.let {
+                        when (op) {
+                            Operation.ATRIBUTION -> cart.productIdToQuantity[id] = newValue ?: 1
+                            Operation.SUBTRACTION -> cart.productIdToQuantity[id] = it - 1
+                            Operation.SUM -> cart.productIdToQuantity[id] = it + 1
+                        }
+                    }
+                }
+                db.cartDAO().updateCart(cart)
             }
-
-        }.start()
+            runOnUiThread {
+                updateUI(cart.products, cart.productIdToQuantity)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        refreshProducts()
+        Thread { refreshProducts(op = Operation.NONE) }.start()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

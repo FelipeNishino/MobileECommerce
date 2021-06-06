@@ -1,19 +1,20 @@
 package com.felipenishino.sobala.db
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
 
 @Dao
 interface CartDAO {
     @Insert
-    fun saveInCart(product: Product)
+    fun insertCart(cart: Cart)
 
-    @Query(value = "Select * from Product")
-    fun getAllCart(): List<Product>
+    @Query(value = "Select * from Cart")
+    fun getCart(): Cart?
+
+    @Update
+    fun updateCart(cart: Cart)
 
     @Delete
-    fun deleteProductCart(product: Product)
+    fun deleteCart(cart: Cart)
 }

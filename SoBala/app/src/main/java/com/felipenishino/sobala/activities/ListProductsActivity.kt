@@ -80,7 +80,7 @@ class ListProductsActivity : AppCompatActivity() {
                     true
                 }
                 else -> {
-                    Log.d("navitemselected", "Error, no valid id found.")
+                    Log.d("navItemSelected", "Error, no valid id found.")
                     false
                 }
             }
@@ -121,9 +121,7 @@ class ListProductsActivity : AppCompatActivity() {
             productBinding.txtProductName.text = product.nome
             productBinding.txtProductPrice.text = "R\$${product.preco}"
 
-
             Picasso.get().load(product.linkImg).into(productBinding.imgProduct)
-
 
             productBinding.cardViewProduct.setOnClickListener {
                 val intent = Intent(this,  DetalheProdutoActivity::class.java)
@@ -171,7 +169,7 @@ class ListProductsActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val listaProduto = response.body()
                     if (listaProduto.isNullOrEmpty()) {
-                        Log.d("asdasdsa", "Chamada bem-sucedida, porém retornou vazio")
+                        Log.d("homeRetrofit", "Chamada bem-sucedida, porém retornou vazio")
                     }
                     else {
                         updateUI(listaProduto!!)
@@ -184,7 +182,7 @@ class ListProductsActivity : AppCompatActivity() {
 //                        Snackbar.LENGTH_LONG
 //                    ).show()
 //
-                    Log.e("asdasdsa", response.errorBody().toString())
+                    Log.e("homeRetrofit", response.errorBody().toString())
                 }
             }
 
@@ -201,7 +199,7 @@ class ListProductsActivity : AppCompatActivity() {
 //                    Snackbar.LENGTH_LONG
 //                ).show()
 
-                Log.e("asdasdsa", "Falha Conexão",t)
+                Log.e("homeRetrofit", "Falha Conexão",t)
             }
 
         }
