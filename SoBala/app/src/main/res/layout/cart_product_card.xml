@@ -1,43 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                   xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-                                   android:layout_height="match_parent" android:id="@+id/cardViewCart">
-
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewCart"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginBottom="20dp"
+    app:cardElevation="10dp"
+    app:cardUseCompatPadding="true">
     <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:gravity="center">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
         <ImageView
-                android:layout_width="304dp"
-                android:layout_height="122dp" app:srcCompat="@drawable/bala_placeholder"
-                android:id="@+id/imgCartProduct"/>
+            android:id="@+id/imgCartProduct"
+            android:layout_width="304dp"
+            android:layout_height="122dp"
+            android:layout_margin="10dp"
+            app:srcCompat="@drawable/bala_placeholder" />
+
         <TextView
-                android:text="productName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/txtCartProductName"
-                android:layout_margin="6dp"/>
+            android:id="@+id/txtCartProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="productName" />
+
         <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="304dp"
-                android:layout_height="match_parent">
+            android:layout_width="304dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+
             <Button
-                    android:text="-"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content" android:id="@+id/btnDecrementQuantity" android:layout_weight="1"
-                    android:insetTop="0dp" android:insetBottom="0dp" android:layout_margin="6dp"
-                    app:cornerRadius="12dp"/>
+                android:id="@+id/btnDecrementQuantity"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="-"
+                app:cornerRadius="12dp" />
+
             <EditText
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:id="@+id/editCartProductQuantity" android:layout_weight="1" android:layout_margin="6dp"/>
+                android:id="@+id/editCartProductQuantity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:textAlignment="center" />
+
             <Button
-                    android:text="+"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content" android:id="@+id/btnIncrementQuantity" android:layout_weight="1"
-                    android:insetTop="0dp" android:insetBottom="0dp" android:layout_margin="6dp"
-                    app:cornerRadius="12dp"/>
+                android:id="@+id/btnIncrementQuantity"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="+"
+                app:cornerRadius="12dp" />
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

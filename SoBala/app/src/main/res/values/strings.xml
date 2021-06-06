@@ -17,4 +17,7 @@
     <string name="adSenac">Visite abaixo o site do Senac:</string>
     <string name="senacLogoDesc">Logo do Senac</string>
     <string name="addToCart">Produto adicionado ao carrinho.</string>
+    <string name="purchaseHistory">Histórico de compras</string>
+    <string name="purchaseId">Id da compra: </string>
+    <string name="repurchase">Comprar novamente</string>
 </resources>

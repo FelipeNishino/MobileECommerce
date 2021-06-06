@@ -227,7 +227,6 @@ class ListProductsActivity : AppCompatActivity() {
 
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                val navigationView = findViewById<NavigationView>(R.id.navigationView)
                 updateMenu()
             }
         }
