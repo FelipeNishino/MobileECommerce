@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="openDrawer">Open Menu</string>
+    <string name="closeDrawer">Close Menu</string>
+    <string name="searchTitle">Search title</string>
+    <string name="searchHint">Search product...</string>
+    <string name="appTitle">About Só Bala</string>
+    <string name="adSenac">Visit Senac\'s site below:</string>
+    <string name="senacLogoDesc">Senac\'s Logo</string>
+    <string name="notifyAddedToCart">Product added to cart.</string>
+    <string name="purchaseHistory">Purchase history</string>
+    <string name="purchaseId">Purchase Id:</string>
+    <string name="repurchase">Purchase again</string>
+    <string name="noEmailClient">There are no email clients installed.</string>
+    <string name="needsLogin">Login</string>
+    <string name="btnFinishPurchase">Finish</string>
+    <string name="notifySuccessfulPurchase">Items purchased succesfully.</string>
+    <string name="notifyFailedPurchase">Error during purchase, try again later.</string>
+    <string name="notifyFailedRequest">Server connection error, check your internet connection.</string>
+    <string name="notifyEmptyCart">Your cart is empty.</string>
+    <string name="productImageContentDescription">Product image</string>
+    <string name="productNamePlaceholder">Product name.</string>
+    <string name="btnAddToCart">Add to cart</string>
+    <string name="notifyNoPurchase">No purchase has been made.</string>
+    <string name="menuItemAbout">About</string>
+    <string name="menuItemCart">Cart</string>
+    <string name="menuItemLogout">Logout</string>
+    <string name="appDescription">Só Bala Candy Store is an E-Commerce project developed as the final project for the
+        Mobile Device Programming course from the 5th semester in Computer Science Bachelor\'s degree.\n\n Só Bala\'s
+        developers are listed below, feel free to contact us by e-mail using the links below if you wish to do so.
+    </string>
+    <string name="sendMail">Send mail...</string>
+</resources>

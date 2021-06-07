@@ -4,7 +4,8 @@ data class Product (
     var id: Int,
     var nome: String,
     var preco: Double,
-    var categoria: String,
+    var marca: String,
     var desconto: Int,
-    var descricao: String
-)
+    var descricao: String,
+    var linkImg: String
+) : Serializable
