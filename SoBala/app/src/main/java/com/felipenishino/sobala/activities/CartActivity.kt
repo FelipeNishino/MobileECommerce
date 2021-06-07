@@ -1,37 +1,40 @@
 package com.felipenishino.sobala.activities
 
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityCartBinding
 import com.felipenishino.sobala.databinding.CartProductCardBinding
-import com.felipenishino.sobala.databinding.ProductCardBinding
 import com.felipenishino.sobala.db.AppDatabase
 import com.felipenishino.sobala.model.Cart
 import com.felipenishino.sobala.model.Product
-import com.squareup.picasso.Picasso
 import com.felipenishino.sobala.model.Purchase
 import com.felipenishino.sobala.model.PurchaseItem
 import com.felipenishino.sobala.utils.getCurrentUser
 import com.felipenishino.sobala.utils.onPurchase
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.lang.Exception
+import com.squareup.picasso.Picasso
+import java.text.NumberFormat
+import java.util.*
 
 enum class Operation {
-    SUM, SUBTRACTION, ATRIBUTION, NONE
+    SUM, SUBTRACTION, ATTRIBUTION, NONE
 }
 
 class CartActivity : AppCompatActivity() {
     lateinit var binding: ActivityCartBinding
     lateinit var cart: Cart
     var database: DatabaseReference? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +43,30 @@ class CartActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         configDatabase()
+        Thread { refreshProducts(null, op = Operation.NONE) }.start()
 
+        if (getCurrentUser() == null) {
+            binding.btnFinish.text = getString(R.string.needsLogin)
+            binding.btnFinish.setOnClickListener {
+                val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build())
+
+                val intent = AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build()
+
+                startActivityForResult(intent, 1)
+            }
+        }
+        else {
+            updateFinishButton()
+        }
+
+        binding.txtEmptyCart.visibility = View.INVISIBLE
+    }
+
+    fun updateFinishButton() {
+        binding.btnFinish.text = getString(R.string.btnFinishPurchase)
         binding.btnFinish.setOnClickListener {
             onClickPurchase(cart)
             deleteCart()
@@ -49,46 +75,49 @@ class CartActivity : AppCompatActivity() {
 
     fun updateUI(products: Set<Product>, idToQuantity: Map<Int, Int>) {
         binding.cartContainer.removeAllViews()
-        products.forEach { product ->
-            val productBinding
-                    =
-                    CartProductCardBinding.inflate(layoutInflater)
+        if (products.isNotEmpty()) {
+            var totalPrice = 0.0
+            val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
+            formatter.currency = Currency.getInstance("BRL")
 
-            productBinding.txtCartProductName.text = product.nome
-//            productBinding.txtProductPrice.text = "R\$${product.preco}"
-            productBinding.editCartProductQuantity.setText(idToQuantity[product.id].toString())
+            products.forEach { product ->
+                val productBinding = CartProductCardBinding.inflate(layoutInflater)
 
-            Picasso.get().load(product.linkImg).into(productBinding.imgCartProduct)
+                productBinding.txtCartProductName.text = product.nome
+                productBinding.txtCartProductQuantity.text = (idToQuantity[product.id] ?: 1).toString()
 
-            productBinding.cardViewCart.setOnClickListener {
-                val intent = Intent(this,  DetalheProdutoActivity::class.java)
-                intent.putExtra("product", product)
-                startActivity(intent)
-            }
+                val totalProductPrice = ((idToQuantity[product.id]?.toFloat() ?: 2F) * product.preco)
+                totalPrice += totalProductPrice
 
-            productBinding.editCartProductQuantity.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    var newValue = productBinding.editCartProductQuantity.text.toString().toInt()
-                    if (newValue < 1) {
-                        newValue = 1
+                productBinding.txtCartProductPrice.text = formatter.format(totalProductPrice)
+                Picasso.get().load(product.linkImg).into(productBinding.imgCartProduct)
+
+                productBinding.cardViewCart.setOnClickListener {
+                    val intent = Intent(this, DetalheProdutoActivity::class.java)
+                    intent.putExtra("product", product)
+                    startActivity(intent)
+                }
+
+                productBinding.btnDecrementQuantity.setOnClickListener {
+                    if (idToQuantity[product.id]!! > 1) {
+                        productBinding.txtCartProductQuantity.text = (idToQuantity[product.id]!! - 1).toString()
+                        Thread { refreshProducts(product.id, op = Operation.SUBTRACTION) }.start()
                     }
-                    Thread { refreshProducts(product.id, newValue, Operation.ATRIBUTION) }.start()
                 }
-            }
 
-            productBinding.btnDecrementQuantity.setOnClickListener {
-                if (idToQuantity[product.id]!! > 1) {
-                    productBinding.editCartProductQuantity.setText((idToQuantity[product.id]!! - 1).toString())
-                    Thread { refreshProducts(product.id, op = Operation.SUBTRACTION) }.start()
+                productBinding.btnIncrementQuantity.setOnClickListener {
+                    productBinding.txtCartProductQuantity.text = (idToQuantity[product.id]!! + 1).toString()
+                    Thread { refreshProducts(product.id, op = Operation.SUM) }.start()
                 }
-            }
 
-            productBinding.btnIncrementQuantity.setOnClickListener {
-                productBinding.editCartProductQuantity.setText((idToQuantity[product.id]!! + 1).toString())
-                Thread { refreshProducts(product.id, op = Operation.SUM) }.start()
+                binding.cartContainer.addView(productBinding.root)
             }
+            binding.txtTotalPrice.text = formatter.format(totalPrice)
 
-            binding.cartContainer.addView(productBinding.root)
+        }
+        else {
+            binding.txtEmptyCart.visibility = View.VISIBLE
+            binding.btnFinish.isEnabled = false
         }
     }
 
@@ -100,7 +129,7 @@ class CartActivity : AppCompatActivity() {
                 productID?.let { id ->
                     cart.productIdToQuantity[id]?.let {
                         when (op) {
-                            Operation.ATRIBUTION -> cart.productIdToQuantity[id] = newValue ?: 1
+                            Operation.ATTRIBUTION -> cart.productIdToQuantity[id] = newValue ?: 1
                             Operation.SUBTRACTION -> cart.productIdToQuantity[id] = it - 1
                             Operation.SUM -> cart.productIdToQuantity[id] = it + 1
                         }
@@ -108,42 +137,10 @@ class CartActivity : AppCompatActivity() {
                 }
                 db.cartDAO().updateCart(cart)
             }
-            runOnUiThread {
-                updateUI(cart.products, cart.productIdToQuantity)
-            }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Thread { refreshProducts(op = Operation.NONE) }.start()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-
-        menu?.let {
-            menu.findItem(R.id.barbtnSearch).isVisible = false
-            menu.findItem(R.id.cart).isVisible = false
+        runOnUiThread {
+            updateUI(cart.products, cart.productIdToQuantity)
         }
-
-        return super.onCreateOptionsMenu(menu)
-    fun configDatabase() {
-        val user = getCurrentUser()
-
-        if (user != null) {
-            database = Firebase.database.reference.child("users").child(user.uid)
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     fun onClickPurchase(cart: Cart) {
@@ -165,14 +162,13 @@ class CartActivity : AppCompatActivity() {
 
         try {
             onPurchase(database, purchase)
-            Snackbar.make(binding.root, R.string.addToCart, Snackbar.LENGTH_LONG)
+            Snackbar.make(binding.root, R.string.notifySuccessfulPurchase, Snackbar.LENGTH_LONG)
                 .show()
         }
         catch (E: Exception){
-            Snackbar.make(binding.root, "Erro", Snackbar.LENGTH_LONG)
+            Snackbar.make(binding.root, R.string.notifyFailedPurchase, Snackbar.LENGTH_LONG)
                 .show()
         }
-
     }
 
     fun deleteCart(){
@@ -183,5 +179,47 @@ class CartActivity : AppCompatActivity() {
                 updateUI(emptySet(), emptyMap())
             }
         }.start()
+    }
+
+    fun configDatabase() {
+        val user = getCurrentUser()
+
+        if (user != null) {
+            database = Firebase.database.reference.child("users").child(user.uid)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Thread { refreshProducts(op = Operation.NONE) }.start()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+
+        menu?.let {
+            menu.findItem(R.id.barbtnSearch).isVisible = false
+            menu.findItem(R.id.cart).isVisible = false
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                updateFinishButton()
+            }
+        }
     }
 }

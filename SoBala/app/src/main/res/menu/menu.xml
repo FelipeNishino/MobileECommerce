@@ -8,13 +8,10 @@
                 android:icon="?android:attr/actionModeWebSearchDrawable"
                 app:showAsAction="always"
                 app:actionViewClass="android.widget.SearchView" />
-<!--            android:icon="@drawable/ic_search"-->
-<!--            android:showAsAction="collapseActionView|ifRoom"-->
-<!--            android:actionViewClass="android.widget.SearchView"-->
 
     <item
-        android:id="@+id/cart"
-        android:icon="@drawable/shopping_cart"
-        android:title="Cart"
-        app:showAsAction="always" />
+            android:id="@+id/cart"
+            android:icon="@drawable/shopping_cart"
+            android:title="@string/menuItemCart"
+            app:showAsAction="ifRoom"/>
 </menu>

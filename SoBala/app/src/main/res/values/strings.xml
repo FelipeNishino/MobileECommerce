@@ -1,25 +1,40 @@
 <resources>
-    <string name="app_name">SoBala</string>
+    <string name="app_name" translatable="false">Só Bala</string>
     <string name="openDrawer">Abrir Menu</string>
     <string name="closeDrawer">Fechar Menu</string>
     <string name="searchTitle">Pesquisar titulo</string>
     <string name="searchHint">Pesquisar produto...</string>
     <string name="appTitle">Sobre a Só Bala</string>
-    <string name="appDescription">
-        A loja Só Bala é um projeto de E-Commerce desenvolvido para o trabalho final da
-        disciplina de Programação para Dispositivos Móveis no 5º semestre do curso de
-        Bacharelado em Ciência de Corno.\n\n
-        Os desenvolvedores da Só Bala estão listados abaixo, caso deseje entrar em contato
-        com algum de nós fique a vontade para usar os links e enviar um e-mail diretamente
-        para algum de nós.
+    <string name="appDescription">A loja Só Bala é um projeto de E-Commerce desenvolvido para o trabalho final da disciplina de Programação para Dispositivos Móveis no 5º semestre do curso de Bacharelado em Ciência da Computação.\n\n Os desenvolvedores da Só Bala estão listados abaixo, caso deseje entrar em contato com algum de nós fique a vontade para usar os links e enviar um e-mail diretamente para algum de nós.
     </string>
-    <string name="Nishino">Felipe Danieli Nishino:\nfelipenishino@gmail.com</string>
-    <string name="Yamauchi">Gustavo Yamauchi Souza Reis:\nyamauchi_gu@hotmail.com</string>
-    <string name="Barao">Marco Antônio Barão Neves:\nmarcobaraoneves@gmail.com</string>
+    <string name="Nishino" translatable="false">Felipe Danieli Nishino:\nfelipenishino@gmail.com</string>
+    <string name="Yamauchi" translatable="false">Gustavo Yamauchi Souza Reis:\nyamauchi_gu@hotmail.com</string>
+    <string name="Barao" translatable="false">Marco Antônio Barão Neves:\nmarcobaraoneves@gmail.com</string>
     <string name="adSenac">Visite abaixo o site do Senac:</string>
     <string name="senacLogoDesc">Logo do Senac</string>
-    <string name="addToCart">Produto adicionado ao carrinho.</string>
+    <string name="notifyAddedToCart">Produto adicionado ao carrinho.</string>
     <string name="purchaseHistory">Histórico de compras</string>
     <string name="purchaseId">Id da compra: </string>
     <string name="repurchase">Comprar novamente</string>
+    <string name="noEmailClient">Nenhum cliente de e-mail instalado.</string>
+    <string name="needsLogin">Logar</string>
+    <string name="btnFinishPurchase">Finalizar</string>
+    <string name="notifySuccessfulPurchase">Compra realizada com sucesso!</string>
+    <string name="notifyFailedPurchase">Erro na compra, tente novamente mais tarde.</string>
+    <string name="notifyFailedRequest">Falha na conexão com o servidor, verifique sua internet.</string>
+    <string name="notifyEmptyCart">Seu carrinho está vazio.</string>
+    <string name="cartTotalCostLabel" translatable="false">Total:</string>
+    <string name="cartTotalCostPlaceholder" translatable="false">R$00,00</string>
+    <string name="productImageContentDescription">Foto do produto.</string>
+    <string name="productNamePlaceholder">Nome do produto.</string>
+    <string name="productPricePlaceholder" translatable="false">R$00,00</string>
+    <string name="btnAddToCart">Adicionar ao carrinho</string>
+    <string name="notifyNoPurchase">Nenhuma compra foi realizada.</string>
+    <string name="productQuantityPlaceholder" translatable="false">10</string>
+    <string name="datePlaceholder" translatable="false">16/05/2021 16:33:00</string>
+    <string name="purchaseHistoryContentsPlaceholder" translatable="false">Dentaduras 250g (1), Bananinhas 250g (3), Tubes Morango Azedinho 40g (2)</string>
+    <string name="menuItemAbout">Sobre o aplicativo</string>
+    <string name="menuItemCart">Carrinho</string>
+    <string name="menuItemLogout">Deslogar</string>
+    <string name="sendMail">Enviar e-mail...</string>
 </resources>

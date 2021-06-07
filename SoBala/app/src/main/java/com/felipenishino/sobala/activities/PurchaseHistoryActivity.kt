@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import com.felipenishino.sobala.R
-import com.felipenishino.sobala.databinding.ActivityAccountBinding
 import android.util.Log
+import android.view.View
+import android.view.ViewStructure
 import com.felipenishino.sobala.databinding.ActivityPurchaseHistoryBinding
 import com.felipenishino.sobala.databinding.PurchaseHistoryCardBinding
 import com.felipenishino.sobala.model.Product
@@ -34,15 +35,35 @@ class PurchaseHistoryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         configDatabase()
-
         listPurchases()
+
+        binding.txtNoPurchase.visibility = View.INVISIBLE
     }
 
-    fun configDatabase() {
-        val user = getCurrentUser()
+    fun updateUI(purchases: List<Purchase>) {
+        binding.purchaseContainer.removeAllViews()
+        if (purchases.isNotEmpty()) {
+            purchases.forEach { purchase ->
+                val purchaseBinding = PurchaseHistoryCardBinding.inflate(layoutInflater)
 
-        if (user != null) {
-            database = Firebase.database.reference.child("users").child(user.uid)
+                purchaseBinding.txtPurchaseId.text = purchase.id
+                purchaseBinding.txtPurchasedAt.text = purchase.compradoEm
+                val items = purchase.items.map { item -> "${item.produto.nome} (${item.quantidade})" }
+
+                purchaseBinding.txtProductList.text = items.joinToString(separator = ", ")
+
+                purchaseBinding.btnPurchaseAgain.setOnClickListener {
+                    onPurchase(
+                        database,
+                        Purchase(items = purchase.items, valorTotal = purchase.valorTotal)
+                    )
+                }
+
+                binding.purchaseContainer.addView(purchaseBinding.root)
+            }
+        }
+        else {
+            binding.txtNoPurchase.visibility = View.VISIBLE
         }
     }
 
@@ -52,7 +73,6 @@ class PurchaseHistoryActivity : AppCompatActivity() {
                 val itemList = arrayListOf<Purchase>()
                 dataSnapshot.children.forEach {
                     val map = it.getValue<HashMap<String, Any>>()
-
 
                     val items = map?.get("items") as List<HashMap<String, *>>
                     val purchaseItems = items.map { item ->
@@ -72,10 +92,7 @@ class PurchaseHistoryActivity : AppCompatActivity() {
 
                     itemList.add(Purchase(id = it.key, valorTotal = map["valorTotal"] as Double, compradoEm = map["compradoEm"] as String?, items = purchaseItems))
                 }
-
-                if (itemList.isNotEmpty()) {
-                    updateUI(itemList)
-                }
+                updateUI(itemList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -85,20 +102,11 @@ class PurchaseHistoryActivity : AppCompatActivity() {
         database?.child("purchases")?.addValueEventListener(purchaseListener)
     }
 
-    fun updateUI(purchases: List<Purchase>) {
-        binding.purchaseContainer.removeAllViews()
-        purchases.forEach { purchase ->
-            val purchaseBinding = PurchaseHistoryCardBinding.inflate(layoutInflater)
+    fun configDatabase() {
+        val user = getCurrentUser()
 
-            purchaseBinding.txtPurchaseId.text = purchase.id
-            purchaseBinding.txtPurchasedAt.text = purchase.compradoEm
-            val items = purchase.items.map { item -> "${item.produto.nome} (${item.quantidade})" }
-
-            purchaseBinding.txtProductList.text = items.joinToString(separator = ", ")
-
-            purchaseBinding.btnPurchaseAgain.setOnClickListener { onPurchase(database, Purchase(items = purchase.items, valorTotal = purchase.valorTotal)) }
-
-            binding.purchaseContainer.addView(purchaseBinding.root)
+        if (user != null) {
+            database = Firebase.database.reference.child("users").child(user.uid)
         }
     }
 

@@ -12,7 +12,6 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.SoBala">
         <activity android:name=".activities.PurchaseHistoryActivity"/>
-        <activity android:name=".activities.AccountActivity"/>
         <activity android:name=".activities.AboutActivity"/>
         <activity android:name=".activities.CartActivity"/>
         <activity android:name=".activities.DetalheProdutoActivity"/>

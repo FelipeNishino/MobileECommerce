@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import com.felipenishino.sobala.R
 import com.felipenishino.sobala.databinding.ActivityAboutBinding
 
 
@@ -35,13 +36,13 @@ class AboutActivity : AppCompatActivity() {
     fun sendEmail(address: String) {
         val i = Intent(Intent.ACTION_SEND)
         i.type = "message/rfc822"
-        i.putExtra(Intent.EXTRA_EMAIL, arrayOf("marcobaraoneves@gmail.com"))
+        i.putExtra(Intent.EXTRA_EMAIL, arrayOf(address))
         i.putExtra(Intent.EXTRA_SUBJECT, "")
         i.putExtra(Intent.EXTRA_TEXT, "")
         try {
-            startActivity(Intent.createChooser(i, "Send mail..."))
+            startActivity(Intent.createChooser(i, getString(R.string.sendMail)))
         } catch (ex: ActivityNotFoundException) {
-            Toast.makeText(this, "There are no email clients installed.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.noEmailClient, Toast.LENGTH_SHORT).show()
         }
     }
 
