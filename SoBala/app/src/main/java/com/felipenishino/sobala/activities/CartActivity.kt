@@ -117,6 +117,7 @@ class CartActivity : AppCompatActivity() {
         }
         else {
             binding.txtEmptyCart.visibility = View.VISIBLE
+            binding.txtTotalPrice.text = getString(R.string.cartTotalCostPlaceholder)
             binding.btnFinish.isEnabled = false
         }
     }

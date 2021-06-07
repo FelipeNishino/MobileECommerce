@@ -18,5 +18,4 @@ fun onPurchase(database: DatabaseReference?, purchase: Purchase) {
     val purchasesRef = database?.child("purchases")?.push()
     purchase.id = purchasesRef?.key
     purchasesRef?.setValue(purchase)
-
 }

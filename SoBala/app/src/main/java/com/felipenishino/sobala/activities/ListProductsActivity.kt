@@ -61,12 +61,12 @@ class ListProductsActivity : AppCompatActivity() {
                 R.id.about -> {
                     val i = Intent(this, AboutActivity::class.java)
                     startActivity(i)
-                    false
+                    true
                 }
                 R.id.purchaseHistory -> {
                     val i = Intent(this, PurchaseHistoryActivity::class.java)
                     startActivity(i)
-                    false
+                    true
                 }
                 R.id.login -> {
                     val providers = arrayListOf(AuthUI.IdpConfig.EmailBuilder().build())
@@ -77,16 +77,16 @@ class ListProductsActivity : AppCompatActivity() {
                         .build()
 
                     startActivityForResult(intent, 1)
-                    false
+                    true
                 }
                 R.id.logout -> {
                     FirebaseAuth.getInstance().signOut()
                     updateMenu()
-                    false
+                    true
                 }
                 else -> {
                     Log.d("navItemSelected", "Error, no valid id found.")
-                    false
+                    true
                 }
             }
         }
